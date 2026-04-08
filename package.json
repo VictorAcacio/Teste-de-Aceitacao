@@ -1,0 +1,15 @@
+{
+  "name": "login-tests",
+  "version": "1.0.0",
+  "description": "Teste de Aceitação - Sistema de Login",
+  "scripts": {
+    "test": "jest --verbose"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

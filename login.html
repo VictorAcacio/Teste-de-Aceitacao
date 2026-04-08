@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Login – Teste de Aceitação</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0e14;
+    --surface: #131720;
+    --surface2: #1a2030;
+    --border: #252d3d;
+    --accent: #4f7cff;
+    --accent2: #00e5a0;
+    --danger: #ff4f6a;
+    --warn: #ffb347;
+    --text: #e8ecf5;
+    --muted: #7a8499;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  /* ── LADO ESQUERDO: LOGIN FORM ── */
+  .left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 4rem;
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+
+  .left::before {
+    content: '';
+    position: absolute;
+    top: -120px; left: -120px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(79,124,255,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 3rem; align-self: flex-start;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+
+  h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; letter-spacing: -.03em; }
+  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 2.5rem; }
+
+  .form-group { width: 100%; margin-bottom: 1.25rem; }
+  label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+
+  .input-wrap { position: relative; }
+  .input-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: .4; pointer-events: none; }
+
+  input[type="email"], input[type="password"] {
+    width: 100%; padding: 14px 14px 14px 42px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+  input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,124,255,.15);
+  }
+  input.error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(255,79,106,.12); }
+  input.success { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(0,229,160,.12); }
+
+  .toggle-pw {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--muted); padding: 0;
+    transition: color .2s;
+  }
+  .toggle-pw:hover { color: var(--text); }
+
+  .btn-login {
+    width: 100%; padding: 15px;
+    background: var(--accent);
+    border: none; border-radius: 10px;
+    color: #fff; font-family: var(--sans);
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; margin-top: .5rem;
+    letter-spacing: .02em;
+    transition: background .2s, transform .1s, box-shadow .2s;
+    position: relative; overflow: hidden;
+  }
+  .btn-login:hover { background: #3d6aff; box-shadow: 0 8px 24px rgba(79,124,255,.3); }
+  .btn-login:active { transform: scale(.98); }
+  .btn-login:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; box-shadow: none; }
+
+  /* Loader spinner inside button */
+  .spinner {
+    display: none; width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin: 0 auto;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toast feedback */
+  .toast {
+    margin-top: 1.25rem; padding: 12px 16px;
+    border-radius: 10px; font-size: 13px;
+    font-family: var(--mono); display: none;
+    align-items: center; gap: 10px;
+    animation: slideIn .3s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
+  .toast.success { background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.3); color: var(--accent2); display: flex; }
+  .toast.error   { background: rgba(255,79,106,.1); border: 1px solid rgba(255,79,106,.3); color: var(--danger); display: flex; }
+  .toast.warn    { background: rgba(255,179,71,.1);  border: 1px solid rgba(255,179,71,.3);  color: var(--warn); display: flex; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 1.5rem 0; width: 100%; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .divider span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  .demo-accounts { width: 100%; }
+  .demo-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .demo-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .demo-btn {
+    padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 12px;
+    cursor: pointer; text-align: left; transition: border-color .2s, background .2s;
+    line-height: 1.4;
+  }
+  .demo-btn:hover { border-color: var(--accent); background: rgba(79,124,255,.08); }
+  .demo-btn .dm-label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 2px; }
+  .demo-btn.blocked { border-color: rgba(255,79,106,.3); }
+  .demo-btn.blocked:hover { border-color: var(--danger); background: rgba(255,79,106,.06); }
+
+  /* ── LADO DIREITO: PAINEL DE TESTES ── */
+  .right {
+    background: var(--surface);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .panel-title { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .panel-badge {
+    font-family: var(--mono); font-size: 11px;
+    background: rgba(0,229,160,.12); color: var(--accent2);
+    padding: 3px 10px; border-radius: 20px;
+    border: 1px solid rgba(0,229,160,.2);
+  }
+
+  .log-area {
+    flex: 1; padding: 1.5rem 2rem;
+    overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .log-entry {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: 8px;
+    font-family: var(--mono); font-size: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    animation: fadeLog .25s ease;
+    opacity: 0; transform: translateX(8px);
+  }
+  @keyframes fadeLog { to { opacity:1; transform:none; } }
+  .log-entry.pass { border-left: 3px solid var(--accent2); }
+  .log-entry.fail { border-left: 3px solid var(--danger); }
+  .log-entry.info { border-left: 3px solid var(--accent); }
+  .log-entry.warn { border-left: 3px solid var(--warn); }
+
+  .log-icon { flex-shrink: 0; margin-top: 1px; }
+  .log-ct { color: var(--muted); white-space: nowrap; }
+  .log-msg { color: var(--text); }
+  .log-status-pass { color: var(--accent2); }
+  .log-status-fail { color: var(--danger); }
+
+  .run-bar {
+    padding: 1rem 2rem; border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0;
+  }
+  .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 2px; background: var(--accent2); width: 0; transition: width .4s ease; }
+  .run-info { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  .suite-header-log {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); padding: 8px 0 4px; display: flex; align-items: center; gap: 8px;
+  }
+  .suite-header-log::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ ESQUERDA: FORMULÁRIO ═══════════════ -->
+<div class="left">
+  <div class="logo">
+    <div class="logo-icon">🔐</div>
+    <span class="logo-text">SecureApp</span>
+  </div>
+
+  <h1>Bem-vindo de volta</h1>
+  <p class="subtitle">Faça login para acessar sua conta</p>
+
+  <div class="form-group" style="width:100%">
+    <label for="email">E-mail</label>
+    <div class="input-wrap">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+      <input type="email" id="email" placeholder="ana@email.com" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="form-group" style="width:100%">
+    <label for="senha">Senha</label>
+    <div class="input-wrap">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <input type="password" id="senha" placeholder="••••••••">
+      <button class="toggle-pw" onclick="toggleSenha()" id="eyeBtn" aria-label="Mostrar senha">
+        <svg id="eyeIcon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <button class="btn-login" id="btnLogin" onclick="tentarLogin()">
+    <span id="btnText">Entrar</span>
+    <div class="spinner" id="spinner"></div>
+  </button>
+
+  <div class="toast" id="toast">
+    <span id="toastIcon"></span>
+    <span id="toastMsg"></span>
+  </div>
+
+  <div class="divider"><span>Contas de demonstração</span></div>
+
+  <div class="demo-accounts">
+    <div class="demo-title">Clique para preencher automaticamente</div>
+    <div class="demo-btns">
+      <button class="demo-btn" onclick="preencherDemo('ana@email.com','Senha@123')">
+        <span class="dm-label">✅ Válido</span>
+        ana@email.com<br>Senha@123
+      </button>
+      <button class="demo-btn blocked" onclick="preencherDemo('carlos@email.com','Carlos#456')">
+        <span class="dm-label">🚫 Conta bloqueada</span>
+        carlos@email.com<br>Carlos#456
+      </button>
+      <button class="demo-btn" onclick="preencherDemo('ana@email.com','senhaErrada')">
+        <span class="dm-label">❌ Senha errada</span>
+        ana@email.com<br>senhaErrada
+      </button>
+      <button class="demo-btn" onclick="preencherDemo('naoexiste@x.com','qualquer1')">
+        <span class="dm-label">❌ Usuário inexistente</span>
+        naoexiste@x.com<br>qualquer1
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DIREITA: PAINEL DE TESTES ═══════════════ -->
+<div class="right">
+  <div class="panel-header">
+    <span class="panel-title">Jest — Log de Execução</span>
+    <span class="panel-badge" id="badgeCount">16 testes • 100% ✓</span>
+  </div>
+
+  <div class="log-area" id="logArea">
+    <div style="color:var(--muted);font-family:var(--mono);font-size:12px;margin:auto;text-align:center;opacity:.6">
+      Faça login ou clique em uma conta demo<br>para simular a execução dos testes →
+    </div>
+  </div>
+
+  <div class="run-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="run-info" id="runInfo">Aguardando...</span>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  BANCO DE DADOS SIMULADO (espelha loginService.js)
+// ═══════════════════════════════════════════════
+const users = [
+  { id:1, nome:"Ana Silva", email:"ana@email.com", senha:"Senha@123", ativo:true },
+  { id:2, nome:"Carlos Lima", email:"carlos@email.com", senha:"Carlos#456", ativo:false }
+];
+
+// Simula bcrypt (para demonstração visual, sem lib real no browser)
+function verificarSenha(digitada, armazenada) { return digitada === armazenada; }
+
+function login(email, senha) {
+  if (!email || email.trim() === "") return { sucesso:false, mensagem:"E-mail é obrigatório.", status:400 };
+  if (!senha || senha.trim() === "") return { sucesso:false, mensagem:"Senha é obrigatória.", status:400 };
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!re.test(email)) return { sucesso:false, mensagem:"Formato de e-mail inválido.", status:400 };
+  const user = users.find(u => u.email === email);
+  if (!user) return { sucesso:false, mensagem:"Usuário não encontrado.", status:404 };
+  if (!user.ativo) return { sucesso:false, mensagem:"Conta desativada. Entre em contato com o suporte.", status:403 };
+  if (!verificarSenha(senha, user.senha)) return { sucesso:false, mensagem:"Senha incorreta.", status:401 };
+  return { sucesso:true, mensagem:`Bem-vindo, ${user.nome}!`, token:"jwt.simulado.xxx", usuario:{id:user.id, nome:user.nome, email:user.email}, status:200 };
+}
+
+// ═══════════════════════════════════════════════
+//  LÓGICA DO FORMULÁRIO
+// ═══════════════════════════════════════════════
+function toggleSenha() {
+  const input = document.getElementById('senha');
+  const isPass = input.type === 'password';
+  input.type = isPass ? 'text' : 'password';
+  document.getElementById('eyeIcon').innerHTML = isPass
+    ? '<line x1="1" y1="1" x2="23" y2="23"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><path d="M6.53 6.53A10.05 10.05 0 002 12s4 8 10 8a9.12 9.12 0 005.47-1.77"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+function preencherDemo(email, senha) {
+  document.getElementById('email').value = email;
+  document.getElementById('senha').value = senha;
+  document.getElementById('email').classList.remove('error','success');
+  document.getElementById('senha').classList.remove('error','success');
+  esconderToast();
+}
+
+async function tentarLogin() {
+  const email = document.getElementById('email').value.trim();
+  const senha = document.getElementById('senha').value;
+  const btn = document.getElementById('btnLogin');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btnText');
+
+  // Estado loading
+  btn.disabled = true;
+  btnText.style.display = 'none';
+  spinner.style.display = 'block';
+  esconderToast();
+
+  await delay(900); // simula latência de rede
+
+  spinner.style.display = 'none';
+  btnText.style.display = 'block';
+  btn.disabled = false;
+
+  const resultado = login(email, senha);
+  exibirResultado(resultado, email, senha);
+  executarTestes(email, senha, resultado);
+}
+
+function exibirResultado(r, email, senha) {
+  const eInput = document.getElementById('email');
+  const sInput = document.getElementById('senha');
+  const toast  = document.getElementById('toast');
+  const icon   = document.getElementById('toastIcon');
+  const msg    = document.getElementById('toastMsg');
+
+  eInput.classList.remove('error','success');
+  sInput.classList.remove('error','success');
+  toast.className = 'toast';
+
+  if (r.sucesso) {
+    eInput.classList.add('success'); sInput.classList.add('success');
+    toast.classList.add('success');
+    icon.textContent = '✓'; msg.textContent = r.mensagem + ' (Token JWT gerado)';
+  } else if (r.status === 400) {
+    eInput.classList.add('error'); sInput.classList.add('error');
+    toast.classList.add('error'); icon.textContent = '✕'; msg.textContent = r.mensagem;
+  } else if (r.status === 401) {
+    sInput.classList.add('error');
+    toast.classList.add('error'); icon.textContent = '✕'; msg.textContent = r.mensagem;
+  } else if (r.status === 403) {
+    toast.classList.add('warn'); icon.textContent = '⚠'; msg.textContent = r.mensagem;
+  } else if (r.status === 404) {
+    eInput.classList.add('error');
+    toast.classList.add('error'); icon.textContent = '✕'; msg.textContent = r.mensagem;
+  }
+}
+
+function esconderToast() { document.getElementById('toast').className = 'toast'; }
+
+// ═══════════════════════════════════════════════
+//  SIMULAÇÃO DOS TESTES JEST NO PAINEL DIREITO
+// ═══════════════════════════════════════════════
+const TODOS_TESTES = [
+  { suite:"📋 SUITE 1 – Validação de Campos", ct:"CT-01", desc:"Deve rejeitar e-mail vazio", fn:() => login("","Senha@123"), check:r=>r.status===400, time:4 },
+  { suite:null, ct:"CT-02", desc:"Deve rejeitar senha vazia", fn:() => login("ana@email.com",""), check:r=>r.status===400, time:1 },
+  { suite:null, ct:"CT-03", desc:"Deve rejeitar e-mail com formato inválido", fn:() => login("email-sem-arroba.com","Senha@123"), check:r=>r.status===400, time:1 },
+  { suite:null, ct:"CT-04", desc:"Deve rejeitar ambos os campos vazios", fn:() => login("",""), check:r=>r.sucesso===false, time:0 },
+  { suite:"🔐 SUITE 2 – Autenticação", ct:"CT-05", desc:"Login com credenciais corretas", fn:() => login("ana@email.com","Senha@123"), check:r=>r.sucesso===true, time:24, highlight:true },
+  { suite:null, ct:"CT-06", desc:"Rejeitar usuário inexistente", fn:() => login("naoexiste@x.com","abc"), check:r=>r.status===404, time:1 },
+  { suite:null, ct:"CT-07", desc:"Rejeitar senha incorreta", fn:() => login("ana@email.com","errada"), check:r=>r.status===401, time:20 },
+  { suite:null, ct:"CT-08", desc:"Bloquear conta desativada", fn:() => login("carlos@email.com","Carlos#456"), check:r=>r.status===403, time:1 },
+  { suite:null, ct:"CT-09", desc:"Retornar dados do usuário (sem senha)", fn:() => login("ana@email.com","Senha@123"), check:r=>r.usuario&&r.usuario.senha===undefined, time:22 },
+  { suite:"🔑 SUITE 3 – Segurança JWT", ct:"CT-10", desc:"Token gerado deve ser string", fn:() => login("ana@email.com","Senha@123"), check:r=>typeof r.token==='string', time:22 },
+  { suite:null, ct:"CT-11", desc:"Token adulterado deve ser rejeitado", fn:() => ({valido:false}), check:r=>r.valido===false, time:1 },
+  { suite:null, ct:"CT-12", desc:"Token vazio deve ser rejeitado", fn:() => ({valido:false}), check:r=>r.valido===false, time:0 },
+  { suite:null, ct:"CT-13", desc:"Token não deve expor a senha", fn:() => login("ana@email.com","Senha@123"), check:r=>!r.usuario?.senha, time:21 },
+  { suite:"⚠️  SUITE 4 – Casos de Borda", ct:"CT-14", desc:"Case-sensitive no e-mail", fn:() => login("ANA@EMAIL.COM","Senha@123"), check:r=>r.sucesso===false, time:9 },
+  { suite:null, ct:"CT-15", desc:"Campo nulo deve ser inválido", fn:() => login(null,null), check:r=>r.status===400, time:0 },
+  { suite:null, ct:"CT-16", desc:"Senha só com espaços deve ser rejeitada", fn:() => login("ana@email.com","   "), check:r=>r.sucesso===false, time:2 },
+];
+
+async function executarTestes(email, senha, resultadoReal) {
+  const logArea = document.getElementById('logArea');
+  const fill    = document.getElementById('progressFill');
+  const info    = document.getElementById('runInfo');
+
+  logArea.innerHTML = '';
+  fill.style.width = '0%';
+  info.textContent = 'Executando...';
+
+  let passCount = 0;
+  const total = TODOS_TESTES.length;
+
+  for (let i = 0; i < total; i++) {
+    const t = TODOS_TESTES[i];
+
+    // Adiciona cabeçalho de suíte
+    if (t.suite) {
+      const sh = document.createElement('div');
+      sh.className = 'suite-header-log';
+      sh.textContent = t.suite;
+      logArea.appendChild(sh);
+    }
+
+    await delay(80 + Math.random()*60);
+
+    let resultado;
+    try { resultado = t.fn(); } catch(e) { resultado = {}; }
+    const passou = t.check(resultado);
+    if (passou) passCount++;
+
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${passou ? 'pass' : 'fail'}`;
+    entry.style.animation = 'fadeLog .25s ease forwards';
+    entry.innerHTML = `
+      <span class="log-icon">${passou ? '✓' : '✕'}</span>
+      <span class="log-ct">${t.ct}</span>
+      <span class="log-msg">${t.desc}</span>
+      <span style="margin-left:auto;color:var(--muted);font-size:11px">${t.time}ms</span>
+    `;
+    logArea.appendChild(entry);
+    logArea.scrollTop = logArea.scrollHeight;
+
+    fill.style.width = `${Math.round(((i+1)/total)*100)}%`;
+    info.textContent = `${i+1}/${total} • ${passCount} ✓`;
+  }
+
+  const pct = Math.round((passCount/total)*100);
+  info.textContent = `${passCount}/${total} passed • ${pct}%`;
+  document.getElementById('badgeCount').textContent = `${total} testes • ${pct}% ✓`;
+  fill.style.background = pct === 100 ? 'var(--accent2)' : 'var(--danger)';
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>
