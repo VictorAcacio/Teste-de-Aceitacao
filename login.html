@@ -1,483 +1,1184 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistema de Login – Teste de Aceitação</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Login – Teste de Aceitação</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  :root {
-    --bg: #0b0e14;
-    --surface: #131720;
-    --surface2: #1a2030;
-    --border: #252d3d;
-    --accent: #4f7cff;
-    --accent2: #00e5a0;
-    --danger: #ff4f6a;
-    --warn: #ffb347;
-    --text: #e8ecf5;
-    --muted: #7a8499;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Syne', sans-serif;
-  }
+    :root {
+      --bg: #0b0e14;
+      --surf: #131720;
+      --surf2: #1a2030;
+      --border: #252d3d;
+      --accent: #4f7cff;
+      --green: #00e5a0;
+      --red: #ff4f6a;
+      --warn: #ffb347;
+      --text: #e8ecf5;
+      --muted: #7a8499;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Syne', sans-serif;
+    }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
 
-  /* ── LADO ESQUERDO: LOGIN FORM ── */
-  .left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 3rem 4rem;
-    position: relative;
-    border-right: 1px solid var(--border);
-  }
+    /* ESQUERDA */
+    .left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 4rem;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
 
-  .left::before {
-    content: '';
-    position: absolute;
-    top: -120px; left: -120px;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(79,124,255,.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
+    .left::before {
+      content: '';
+      position: absolute;
+      top: -150px;
+      left: -150px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(79, 124, 255, .1) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 3rem; align-self: flex-start;
-  }
-  .logo-icon {
-    width: 36px; height: 36px;
-    background: var(--accent);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-  }
-  .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 3rem;
+      align-self: flex-start;
+    }
 
-  h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; letter-spacing: -.03em; }
-  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 2.5rem; }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
 
-  .form-group { width: 100%; margin-bottom: 1.25rem; }
-  label { display: block; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
 
-  .input-wrap { position: relative; }
-  .input-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: .4; pointer-events: none; }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      letter-spacing: -.03em;
+    }
 
-  input[type="email"], input[type="password"] {
-    width: 100%; padding: 14px 14px 14px 42px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 14px;
-    transition: border-color .2s, box-shadow .2s;
-    outline: none;
-  }
-  input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,124,255,.15);
-  }
-  input.error { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(255,79,106,.12); }
-  input.success { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(0,229,160,.12); }
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 2.5rem;
+    }
 
-  .toggle-pw {
-    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-    background: none; border: none; cursor: pointer; color: var(--muted); padding: 0;
-    transition: color .2s;
-  }
-  .toggle-pw:hover { color: var(--text); }
+    .fg {
+      width: 100%;
+      margin-bottom: 1.25rem;
+    }
 
-  .btn-login {
-    width: 100%; padding: 15px;
-    background: var(--accent);
-    border: none; border-radius: 10px;
-    color: #fff; font-family: var(--sans);
-    font-size: 15px; font-weight: 700;
-    cursor: pointer; margin-top: .5rem;
-    letter-spacing: .02em;
-    transition: background .2s, transform .1s, box-shadow .2s;
-    position: relative; overflow: hidden;
-  }
-  .btn-login:hover { background: #3d6aff; box-shadow: 0 8px 24px rgba(79,124,255,.3); }
-  .btn-login:active { transform: scale(.98); }
-  .btn-login:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; box-shadow: none; }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
 
-  /* Loader spinner inside button */
-  .spinner {
-    display: none; width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,.3);
-    border-top-color: #fff; border-radius: 50%;
-    animation: spin .7s linear infinite;
-    margin: 0 auto;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+    .wrap {
+      position: relative;
+    }
 
-  /* Toast feedback */
-  .toast {
-    margin-top: 1.25rem; padding: 12px 16px;
-    border-radius: 10px; font-size: 13px;
-    font-family: var(--mono); display: none;
-    align-items: center; gap: 10px;
-    animation: slideIn .3s ease;
-  }
-  @keyframes slideIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:none; } }
-  .toast.success { background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.3); color: var(--accent2); display: flex; }
-  .toast.error   { background: rgba(255,79,106,.1); border: 1px solid rgba(255,79,106,.3); color: var(--danger); display: flex; }
-  .toast.warn    { background: rgba(255,179,71,.1);  border: 1px solid rgba(255,179,71,.3);  color: var(--warn); display: flex; }
+    .wrap .ico-l {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: .35;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
 
-  .divider { display: flex; align-items: center; gap: 12px; margin: 1.5rem 0; width: 100%; }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .divider span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .wrap input {
+      width: 100%;
+      padding: 14px 44px 14px 42px;
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
 
-  .demo-accounts { width: 100%; }
-  .demo-title { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-  .demo-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .demo-btn {
-    padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 12px;
-    cursor: pointer; text-align: left; transition: border-color .2s, background .2s;
-    line-height: 1.4;
-  }
-  .demo-btn:hover { border-color: var(--accent); background: rgba(79,124,255,.08); }
-  .demo-btn .dm-label { font-size: 10px; color: var(--muted); display: block; margin-bottom: 2px; }
-  .demo-btn.blocked { border-color: rgba(255,79,106,.3); }
-  .demo-btn.blocked:hover { border-color: var(--danger); background: rgba(255,79,106,.06); }
+    .wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 124, 255, .15);
+    }
 
-  /* ── LADO DIREITO: PAINEL DE TESTES ── */
-  .right {
-    background: var(--surface);
-    display: flex; flex-direction: column;
-    overflow: hidden;
-  }
+    .wrap input.ok {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0, 229, 160, .12);
+    }
 
-  .panel-header {
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    flex-shrink: 0;
-  }
-  .panel-title { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-  .panel-badge {
-    font-family: var(--mono); font-size: 11px;
-    background: rgba(0,229,160,.12); color: var(--accent2);
-    padding: 3px 10px; border-radius: 20px;
-    border: 1px solid rgba(0,229,160,.2);
-  }
+    .wrap input.err {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(255, 79, 106, .12);
+    }
 
-  .log-area {
-    flex: 1; padding: 1.5rem 2rem;
-    overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
-  }
+    .eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      transition: color .2s;
+    }
 
-  .log-entry {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 10px 12px; border-radius: 8px;
-    font-family: var(--mono); font-size: 12px;
-    background: var(--surface2); border: 1px solid var(--border);
-    animation: fadeLog .25s ease;
-    opacity: 0; transform: translateX(8px);
-  }
-  @keyframes fadeLog { to { opacity:1; transform:none; } }
-  .log-entry.pass { border-left: 3px solid var(--accent2); }
-  .log-entry.fail { border-left: 3px solid var(--danger); }
-  .log-entry.info { border-left: 3px solid var(--accent); }
-  .log-entry.warn { border-left: 3px solid var(--warn); }
+    .eye-btn:hover {
+      color: var(--text);
+    }
 
-  .log-icon { flex-shrink: 0; margin-top: 1px; }
-  .log-ct { color: var(--muted); white-space: nowrap; }
-  .log-msg { color: var(--text); }
-  .log-status-pass { color: var(--accent2); }
-  .log-status-fail { color: var(--danger); }
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      min-height: 50px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: .5rem;
+      transition: background .2s, transform .1s, box-shadow .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
-  .run-bar {
-    padding: 1rem 2rem; border-top: 1px solid var(--border);
-    display: flex; align-items: center; gap: 12px;
-    flex-shrink: 0;
-  }
-  .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .progress-fill { height: 100%; border-radius: 2px; background: var(--accent2); width: 0; transition: width .4s ease; }
-  .run-info { font-family: var(--mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .btn-login:hover {
+      background: #3d6aff;
+      box-shadow: 0 8px 24px rgba(79, 124, 255, .3);
+    }
 
-  .suite-header-log {
-    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--muted); padding: 8px 0 4px; display: flex; align-items: center; gap: 8px;
-  }
-  .suite-header-log::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-</style>
+    .btn-login:active {
+      transform: scale(.98);
+    }
+
+    .btn-login:disabled {
+      background: var(--surf2);
+      color: var(--muted);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .toast {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-family: var(--mono);
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: slideIn .3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .toast.ok {
+      display: flex;
+      background: rgba(0, 229, 160, .1);
+      border: 1px solid rgba(0, 229, 160, .3);
+      color: var(--green);
+    }
+
+    .toast.err {
+      display: flex;
+      background: rgba(255, 79, 106, .1);
+      border: 1px solid rgba(255, 79, 106, .3);
+      color: var(--red);
+    }
+
+    .toast.warn {
+      display: flex;
+      background: rgba(255, 179, 71, .1);
+      border: 1px solid rgba(255, 179, 71, .3);
+      color: var(--warn);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 1.5rem 0;
+      width: 100%;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .demo-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .demo-btn {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-align: left;
+      line-height: 1.55;
+      transition: border-color .18s, background .18s;
+    }
+
+    .demo-btn:hover {
+      border-color: var(--accent);
+      background: rgba(79, 124, 255, .08);
+    }
+
+    .demo-btn.blk {
+      border-color: rgba(255, 79, 106, .3);
+    }
+
+    .demo-btn.blk:hover {
+      border-color: var(--red);
+      background: rgba(255, 79, 106, .06);
+    }
+
+    .demo-btn .dlabel {
+      display: block;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    /* DIREITA */
+    .right {
+      background: var(--surf);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .ph {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .ph-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .ph-badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: rgba(0, 229, 160, .12);
+      color: var(--green);
+      border: 1px solid rgba(0, 229, 160, .2);
+      transition: all .3s;
+    }
+
+    .log {
+      flex: 1;
+      padding: 1.25rem 1.75rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .placeholder {
+      margin: auto;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 2;
+      opacity: .55;
+    }
+
+    .suite-sep {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 0 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .suite-sep::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .log-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-shrink: 0;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--surf2);
+      border: 1px solid var(--border);
+      animation: fadeUp .2s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(4px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .log-row.pass {
+      border-left: 3px solid var(--green);
+    }
+
+    .log-row.fail {
+      border-left: 3px solid var(--red);
+    }
+
+    .l-ico {
+      flex-shrink: 0;
+      width: 16px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .l-ct {
+      color: var(--muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .l-desc {
+      flex: 1;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .l-ms {
+      color: var(--muted);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .fail-block {
+      flex-shrink: 0;
+      margin: -3px 0 2px 37px;
+      padding: 9px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 2.1;
+      background: rgba(255, 79, 106, .05);
+      border: 1px solid rgba(255, 79, 106, .18);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      animation: fadeUp .2s ease forwards;
+      opacity: 0;
+    }
+
+    .fail-block .exp {
+      color: var(--green);
+    }
+
+    .fail-block .rec {
+      color: var(--red);
+    }
+
+    .fail-block .val {
+      color: var(--text);
+    }
+
+    .run-bar {
+      padding: 1rem 1.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .prog-track {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--green);
+      width: 0;
+      transition: width .3s ease, background .4s;
+    }
+
+    .run-info {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ═══════════════ ESQUERDA: FORMULÁRIO ═══════════════ -->
-<div class="left">
-  <div class="logo">
-    <div class="logo-icon">🔐</div>
-    <span class="logo-text">SecureApp</span>
-  </div>
-
-  <h1>Bem-vindo de volta</h1>
-  <p class="subtitle">Faça login para acessar sua conta</p>
-
-  <div class="form-group" style="width:100%">
-    <label for="email">E-mail</label>
-    <div class="input-wrap">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-      <input type="email" id="email" placeholder="ana@email.com" autocomplete="off">
+  <div class="left">
+    <div class="logo">
+      <div class="logo-icon">&#128272;</div>
+      <span class="logo-text">SecureApp</span>
     </div>
-  </div>
+    <h1>Bem-vindo de volta</h1>
+    <p class="sub">Faca login para acessar sua conta</p>
 
-  <div class="form-group" style="width:100%">
-    <label for="senha">Senha</label>
-    <div class="input-wrap">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-      <input type="password" id="senha" placeholder="••••••••">
-      <button class="toggle-pw" onclick="toggleSenha()" id="eyeBtn" aria-label="Mostrar senha">
-        <svg id="eyeIcon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
+    <div class="fg">
+      <label for="email">E-mail</label>
+      <div class="wrap">
+        <span class="ico-l">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+            <polyline points="22,6 12,12 2,6" />
+          </svg>
+        </span>
+        <input type="email" id="email" placeholder="ana@email.com" autocomplete="off">
+      </div>
     </div>
-  </div>
 
-  <button class="btn-login" id="btnLogin" onclick="tentarLogin()">
-    <span id="btnText">Entrar</span>
-    <div class="spinner" id="spinner"></div>
-  </button>
+    <div class="fg">
+      <label for="senha">Senha</label>
+      <div class="wrap">
+        <span class="ico-l">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0110 0v4" />
+          </svg>
+        </span>
+        <input type="password" id="senha" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;">
+        <button class="eye-btn" id="eyeBtn" onclick="toggleSenha()" type="button" aria-label="Mostrar/ocultar senha">
+          <svg id="svg-eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg id="svg-eye-off" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <line x1="1" y1="1" x2="23" y2="23" />
+            <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19" />
+            <path d="M6.53 6.53A10.05 10.05 0 002 12s4 8 10 8a9.12 9.12 0 005.47-1.77" />
+            <line x1="9.88" y1="9.88" x2="14.12" y2="14.12" />
+          </svg>
+        </button>
+      </div>
+    </div>
 
-  <div class="toast" id="toast">
-    <span id="toastIcon"></span>
-    <span id="toastMsg"></span>
-  </div>
+    <button class="btn-login" id="btnLogin" onclick="tentarLogin() ; limparToken()" type="button">
+      <span id="btnText">Entrar</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
 
-  <div class="divider"><span>Contas de demonstração</span></div>
+    <div class="toast" id="toast">
+      <span id="toastIco"></span>
+      <span id="toastMsg"></span>
+    </div>
 
-  <div class="demo-accounts">
-    <div class="demo-title">Clique para preencher automaticamente</div>
-    <div class="demo-btns">
-      <button class="demo-btn" onclick="preencherDemo('ana@email.com','Senha@123')">
-        <span class="dm-label">✅ Válido</span>
+    <div class="divider"><span>Contas de demonstracao</span></div>
+
+    <div class="demo-label">Clique para preencher automaticamente</div>
+    <div class="demo-grid">
+      <button class="demo-btn" onclick="demo('ana@email.com','Senha@123')" type="button">
+        <span class="dlabel">OK - Credenciais validas</span>
         ana@email.com<br>Senha@123
       </button>
-      <button class="demo-btn blocked" onclick="preencherDemo('carlos@email.com','Carlos#456')">
-        <span class="dm-label">🚫 Conta bloqueada</span>
+      <button class="demo-btn blk" onclick="demo('carlos@email.com','Carlos#456')" type="button">
+        <span class="dlabel">BLOQ - Conta bloqueada</span>
         carlos@email.com<br>Carlos#456
       </button>
-      <button class="demo-btn" onclick="preencherDemo('ana@email.com','senhaErrada')">
-        <span class="dm-label">❌ Senha errada</span>
+      <button class="demo-btn" onclick="demo('ana@email.com','senhaErrada')" type="button">
+        <span class="dlabel">ERRO - Senha incorreta</span>
         ana@email.com<br>senhaErrada
       </button>
-      <button class="demo-btn" onclick="preencherDemo('naoexiste@x.com','qualquer1')">
-        <span class="dm-label">❌ Usuário inexistente</span>
+      <button class="demo-btn" onclick="demo('naoexiste@x.com','qualquer1')" type="button">
+        <span class="dlabel">ERRO - Usuario inexistente</span>
         naoexiste@x.com<br>qualquer1
       </button>
     </div>
   </div>
-</div>
 
-<!-- ═══════════════ DIREITA: PAINEL DE TESTES ═══════════════ -->
-<div class="right">
-  <div class="panel-header">
-    <span class="panel-title">Jest — Log de Execução</span>
-    <span class="panel-badge" id="badgeCount">16 testes • 100% ✓</span>
-  </div>
-
-  <div class="log-area" id="logArea">
-    <div style="color:var(--muted);font-family:var(--mono);font-size:12px;margin:auto;text-align:center;opacity:.6">
-      Faça login ou clique em uma conta demo<br>para simular a execução dos testes →
+  <div class="right">
+    <div class="ph">
+      <span class="ph-title">Jest - Log de Execucao</span>
+      <span class="ph-badge" id="badge">aguardando entrada...</span>
+    </div>
+    <div class="log" id="log">
+      <div class="placeholder">
+        Preencha os campos e clique em Entrar<br>
+        ou selecione uma conta demo para ver os testes rodarem
+      </div>
+    </div>
+    <div class="run-bar">
+      <div class="prog-track">
+        <div class="prog-fill" id="prog"></div>
+      </div>
+      <span class="run-info" id="info">Aguardando...</span>
     </div>
   </div>
 
-  <div class="run-bar">
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <span class="run-info" id="runInfo">Aguardando...</span>
-  </div>
-</div>
+  <script>
+    var DB = [
+      { id: 1, nome: 'Ana Silva', email: 'ana@email.com', senha: 'Senha@123', ativo: true },
+      { id: 2, nome: 'Carlos Lima', email: 'carlos@email.com', senha: 'Carlos#456', ativo: false }
+    ];
 
-<script>
-// ═══════════════════════════════════════════════
-//  BANCO DE DADOS SIMULADO (espelha loginService.js)
-// ═══════════════════════════════════════════════
-const users = [
-  { id:1, nome:"Ana Silva", email:"ana@email.com", senha:"Senha@123", ativo:true },
-  { id:2, nome:"Carlos Lima", email:"carlos@email.com", senha:"Carlos#456", ativo:false }
-];
+    var TOKENS = [];
 
-// Simula bcrypt (para demonstração visual, sem lib real no browser)
-function verificarSenha(digitada, armazenada) { return digitada === armazenada; }
+    function login(email, senha) {
 
-function login(email, senha) {
-  if (!email || email.trim() === "") return { sucesso:false, mensagem:"E-mail é obrigatório.", status:400 };
-  if (!senha || senha.trim() === "") return { sucesso:false, mensagem:"Senha é obrigatória.", status:400 };
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!re.test(email)) return { sucesso:false, mensagem:"Formato de e-mail inválido.", status:400 };
-  const user = users.find(u => u.email === email);
-  if (!user) return { sucesso:false, mensagem:"Usuário não encontrado.", status:404 };
-  if (!user.ativo) return { sucesso:false, mensagem:"Conta desativada. Entre em contato com o suporte.", status:403 };
-  if (!verificarSenha(senha, user.senha)) return { sucesso:false, mensagem:"Senha incorreta.", status:401 };
-  return { sucesso:true, mensagem:`Bem-vindo, ${user.nome}!`, token:"jwt.simulado.xxx", usuario:{id:user.id, nome:user.nome, email:user.email}, status:200 };
-}
+      email = String(email).trim();
+      senha = String(senha).trim();
 
-// ═══════════════════════════════════════════════
-//  LÓGICA DO FORMULÁRIO
-// ═══════════════════════════════════════════════
-function toggleSenha() {
-  const input = document.getElementById('senha');
-  const isPass = input.type === 'password';
-  input.type = isPass ? 'text' : 'password';
-  document.getElementById('eyeIcon').innerHTML = isPass
-    ? '<line x1="1" y1="1" x2="23" y2="23"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><path d="M6.53 6.53A10.05 10.05 0 002 12s4 8 10 8a9.12 9.12 0 005.47-1.77"/>'
-    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-}
+      if (!email)
+        return { sucesso: false, status: 400, mensagem: 'E-mail e obrigatorio.' };
 
-function preencherDemo(email, senha) {
-  document.getElementById('email').value = email;
-  document.getElementById('senha').value = senha;
-  document.getElementById('email').classList.remove('error','success');
-  document.getElementById('senha').classList.remove('error','success');
-  esconderToast();
-}
+      if (!senha)
+        return { sucesso: false, status: 400, mensagem: 'Senha e obrigatoria.' };
 
-async function tentarLogin() {
-  const email = document.getElementById('email').value.trim();
-  const senha = document.getElementById('senha').value;
-  const btn = document.getElementById('btnLogin');
-  const spinner = document.getElementById('spinner');
-  const btnText = document.getElementById('btnText');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+        return { sucesso: false, status: 400, mensagem: 'Formato de e-mail invalido.' };
 
-  // Estado loading
-  btn.disabled = true;
-  btnText.style.display = 'none';
-  spinner.style.display = 'block';
-  esconderToast();
+      var u = DB.find(x => x.email === email);
 
-  await delay(900); // simula latência de rede
+      if (!u)
+        return { sucesso: false, status: 404, mensagem: 'Usuario nao encontrado.' };
 
-  spinner.style.display = 'none';
-  btnText.style.display = 'block';
-  btn.disabled = false;
+      if (!u.ativo)
+        return { sucesso: false, status: 403, mensagem: 'Conta desativada.' };
 
-  const resultado = login(email, senha);
-  exibirResultado(resultado, email, senha);
-  executarTestes(email, senha, resultado);
-}
+      if (senha !== u.senha)
+        return { sucesso: false, status: 401, mensagem: 'Senha incorreta.' };
 
-function exibirResultado(r, email, senha) {
-  const eInput = document.getElementById('email');
-  const sInput = document.getElementById('senha');
-  const toast  = document.getElementById('toast');
-  const icon   = document.getElementById('toastIcon');
-  const msg    = document.getElementById('toastMsg');
+      var token = gerarToken();
 
-  eInput.classList.remove('error','success');
-  sInput.classList.remove('error','success');
-  toast.className = 'toast';
+      TOKENS.push({
+        token: token,
+        usuarioId: u.id
+      });
 
-  if (r.sucesso) {
-    eInput.classList.add('success'); sInput.classList.add('success');
-    toast.classList.add('success');
-    icon.textContent = '✓'; msg.textContent = r.mensagem + ' (Token JWT gerado)';
-  } else if (r.status === 400) {
-    eInput.classList.add('error'); sInput.classList.add('error');
-    toast.classList.add('error'); icon.textContent = '✕'; msg.textContent = r.mensagem;
-  } else if (r.status === 401) {
-    sInput.classList.add('error');
-    toast.classList.add('error'); icon.textContent = '✕'; msg.textContent = r.mensagem;
-  } else if (r.status === 403) {
-    toast.classList.add('warn'); icon.textContent = '⚠'; msg.textContent = r.mensagem;
-  } else if (r.status === 404) {
-    eInput.classList.add('error');
-    toast.classList.add('error'); icon.textContent = '✕'; msg.textContent = r.mensagem;
-  }
-}
-
-function esconderToast() { document.getElementById('toast').className = 'toast'; }
-
-// ═══════════════════════════════════════════════
-//  SIMULAÇÃO DOS TESTES JEST NO PAINEL DIREITO
-// ═══════════════════════════════════════════════
-const TODOS_TESTES = [
-  { suite:"📋 SUITE 1 – Validação de Campos", ct:"CT-01", desc:"Deve rejeitar e-mail vazio", fn:() => login("","Senha@123"), check:r=>r.status===400, time:4 },
-  { suite:null, ct:"CT-02", desc:"Deve rejeitar senha vazia", fn:() => login("ana@email.com",""), check:r=>r.status===400, time:1 },
-  { suite:null, ct:"CT-03", desc:"Deve rejeitar e-mail com formato inválido", fn:() => login("email-sem-arroba.com","Senha@123"), check:r=>r.status===400, time:1 },
-  { suite:null, ct:"CT-04", desc:"Deve rejeitar ambos os campos vazios", fn:() => login("",""), check:r=>r.sucesso===false, time:0 },
-  { suite:"🔐 SUITE 2 – Autenticação", ct:"CT-05", desc:"Login com credenciais corretas", fn:() => login("ana@email.com","Senha@123"), check:r=>r.sucesso===true, time:24, highlight:true },
-  { suite:null, ct:"CT-06", desc:"Rejeitar usuário inexistente", fn:() => login("naoexiste@x.com","abc"), check:r=>r.status===404, time:1 },
-  { suite:null, ct:"CT-07", desc:"Rejeitar senha incorreta", fn:() => login("ana@email.com","errada"), check:r=>r.status===401, time:20 },
-  { suite:null, ct:"CT-08", desc:"Bloquear conta desativada", fn:() => login("carlos@email.com","Carlos#456"), check:r=>r.status===403, time:1 },
-  { suite:null, ct:"CT-09", desc:"Retornar dados do usuário (sem senha)", fn:() => login("ana@email.com","Senha@123"), check:r=>r.usuario&&r.usuario.senha===undefined, time:22 },
-  { suite:"🔑 SUITE 3 – Segurança JWT", ct:"CT-10", desc:"Token gerado deve ser string", fn:() => login("ana@email.com","Senha@123"), check:r=>typeof r.token==='string', time:22 },
-  { suite:null, ct:"CT-11", desc:"Token adulterado deve ser rejeitado", fn:() => ({valido:false}), check:r=>r.valido===false, time:1 },
-  { suite:null, ct:"CT-12", desc:"Token vazio deve ser rejeitado", fn:() => ({valido:false}), check:r=>r.valido===false, time:0 },
-  { suite:null, ct:"CT-13", desc:"Token não deve expor a senha", fn:() => login("ana@email.com","Senha@123"), check:r=>!r.usuario?.senha, time:21 },
-  { suite:"⚠️  SUITE 4 – Casos de Borda", ct:"CT-14", desc:"Case-sensitive no e-mail", fn:() => login("ANA@EMAIL.COM","Senha@123"), check:r=>r.sucesso===false, time:9 },
-  { suite:null, ct:"CT-15", desc:"Campo nulo deve ser inválido", fn:() => login(null,null), check:r=>r.status===400, time:0 },
-  { suite:null, ct:"CT-16", desc:"Senha só com espaços deve ser rejeitada", fn:() => login("ana@email.com","   "), check:r=>r.sucesso===false, time:2 },
-];
-
-async function executarTestes(email, senha, resultadoReal) {
-  const logArea = document.getElementById('logArea');
-  const fill    = document.getElementById('progressFill');
-  const info    = document.getElementById('runInfo');
-
-  logArea.innerHTML = '';
-  fill.style.width = '0%';
-  info.textContent = 'Executando...';
-
-  let passCount = 0;
-  const total = TODOS_TESTES.length;
-
-  for (let i = 0; i < total; i++) {
-    const t = TODOS_TESTES[i];
-
-    // Adiciona cabeçalho de suíte
-    if (t.suite) {
-      const sh = document.createElement('div');
-      sh.className = 'suite-header-log';
-      sh.textContent = t.suite;
-      logArea.appendChild(sh);
+      return {
+        sucesso: true,
+        status: 200,
+        mensagem: 'Bem-vindo, ' + u.nome + '!',
+        token: token,
+        usuario: { id: u.id, nome: u.nome, email: u.email }
+      };
     }
 
-    await delay(80 + Math.random()*60);
+    /* OLHINHO — troca apenas o display dos dois SVGs pre-existentes */
+    function toggleSenha() {
+      var inp = document.getElementById('senha');
+      var eyeOn = document.getElementById('svg-eye-open');
+      var eyeOff = document.getElementById('svg-eye-off');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        eyeOn.style.display = 'none';
+        eyeOff.style.display = 'block';
+      } else {
+        inp.type = 'password';
+        eyeOn.style.display = 'block';
+        eyeOff.style.display = 'none';
+      }
+      inp.focus();
+    }
 
-    let resultado;
-    try { resultado = t.fn(); } catch(e) { resultado = {}; }
-    const passou = t.check(resultado);
-    if (passou) passCount++;
+    function limparToken() {
+      TOKENS = [];
+    }
 
-    const entry = document.createElement('div');
-    entry.className = `log-entry ${passou ? 'pass' : 'fail'}`;
-    entry.style.animation = 'fadeLog .25s ease forwards';
-    entry.innerHTML = `
-      <span class="log-icon">${passou ? '✓' : '✕'}</span>
-      <span class="log-ct">${t.ct}</span>
-      <span class="log-msg">${t.desc}</span>
-      <span style="margin-left:auto;color:var(--muted);font-size:11px">${t.time}ms</span>
-    `;
-    logArea.appendChild(entry);
-    logArea.scrollTop = logArea.scrollHeight;
+    function gerarToken() {
+      return 'token_' + Math.random().toString(36).substring(2) + Date.now();
+    }
 
-    fill.style.width = `${Math.round(((i+1)/total)*100)}%`;
-    info.textContent = `${i+1}/${total} • ${passCount} ✓`;
-  }
+    function verificarToken(token) {
 
-  const pct = Math.round((passCount/total)*100);
-  info.textContent = `${passCount}/${total} passed • ${pct}%`;
-  document.getElementById('badgeCount').textContent = `${total} testes • ${pct}% ✓`;
-  fill.style.background = pct === 100 ? 'var(--accent2)' : 'var(--danger)';
-}
+      if (!token || typeof token !== "string")
+        return { valido: false, mensagem: 'Token inválido ou expirado.' };
 
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-</script>
+      var registro = TOKENS.find(t => t.token === token);
+
+      if (!registro)
+        return { valido: false, mensagem: 'Token inválido ou expirado.' };
+
+      var usuario = DB.find(u => u.id === registro.usuarioId);
+
+      if (!usuario)
+        return { valido: false, mensagem: 'Token inválido ou expirado.' };
+
+      return {
+        valido: true,
+        usuario: {
+          id: usuario.id,
+          nome: usuario.nome,
+          email: usuario.email
+        }
+      };
+    }
+
+    function demo(e, s) {
+      document.getElementById('email').value = e;
+      document.getElementById('senha').value = s;
+      document.getElementById('email').classList.remove('ok', 'err');
+      document.getElementById('senha').classList.remove('ok', 'err');
+      document.getElementById('toast').className = 'toast';
+    }
+
+    function tentarLogin() {
+      var emailVal = document.getElementById('email').value.trim();
+      var senhaVal = document.getElementById('senha').value;
+      var btn = document.getElementById('btnLogin');
+      btn.disabled = true;
+      document.getElementById('btnText').style.display = 'none';
+      document.getElementById('spinner').style.display = 'block';
+      document.getElementById('toast').className = 'toast';
+      setTimeout(function () {
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('btnText').style.display = 'block';
+        btn.disabled = false;
+        var r = login(emailVal, senhaVal);
+        mostrarToast(r);
+        executarTestes(emailVal, senhaVal);
+      }, 800);
+    }
+
+    function mostrarToast(r) {
+      var eI = document.getElementById('email');
+      var sI = document.getElementById('senha');
+      var t = document.getElementById('toast');
+      var ic = document.getElementById('toastIco');
+      var mg = document.getElementById('toastMsg');
+      eI.classList.remove('ok', 'err');
+      sI.classList.remove('ok', 'err');
+      t.className = 'toast';
+      if (r.sucesso) {
+        eI.classList.add('ok'); sI.classList.add('ok');
+        t.classList.add('ok'); ic.textContent = '✓'; mg.textContent = r.mensagem + ' · Token JWT gerado';
+      } else if (r.status === 400) {
+        eI.classList.add('err'); sI.classList.add('err');
+        t.classList.add('err'); ic.textContent = '✕'; mg.textContent = r.mensagem;
+      } else if (r.status === 401) {
+        sI.classList.add('err');
+        t.classList.add('err'); ic.textContent = '✕'; mg.textContent = r.mensagem;
+      } else if (r.status === 403) {
+        t.classList.add('warn'); ic.textContent = '!'; mg.textContent = r.mensagem;
+      } else if (r.status === 404) {
+        eI.classList.add('err');
+        t.classList.add('err'); ic.textContent = '✕'; mg.textContent = r.mensagem;
+      }
+    }
+
+    function montarTestes(emailInput, senhaInput) {
+
+      return [
+
+        // SUITE 1
+        {
+          suite: 'SUITE 1 - Validacao de Campos',
+          ct: 'CT-01',
+          desc: 'Email deve estar preenchido',
+          ms: 3,
+          fn: () => login(emailInput, senhaInput),
+          ok: () => emailInput !== '',
+          exp: 'email != ""',
+          rec: () => 'email = "' + emailInput + '"'
+        },
+
+        {
+          ct: 'CT-02',
+          desc: 'Senha deve estar preenchida',
+          ms: 3,
+          fn: () => login(emailInput, senhaInput),
+          ok: () => senhaInput !== '',
+          exp: 'senha != ""',
+          rec: () => 'senha = "' + senhaInput + '"'
+        },
+
+        {
+          ct: 'CT-03',
+          desc: 'Formato de email valido',
+          ms: 3,
+          fn: () => login(emailInput, senhaInput),
+          ok: () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput),
+          exp: 'email valido',
+          rec: () => emailInput
+        },
+
+        {
+          ct: 'CT-04',
+          desc: 'Email e Senha devem estar preenchidos',
+          ms: 4,
+          fn: () => login(emailInput, senhaInput),
+          ok: () => emailInput !== '' && senhaInput !== '',
+          exp: 'email sem espacos',
+          rec: () => emailInput
+        },
+
+
+        // SUITE 2
+        {
+          suite: 'SUITE 2 - Autenticacao',
+          ct: 'CT-05',
+          desc: 'Deve fazer login com credenciais corretas',
+          ms: 12,
+          fn: () => login(emailInput, senhaInput),
+          ok: r => r.sucesso === true && r.status === 200 && r.token,
+          exp: 'Login bem sucedido',
+          rec: r => JSON.stringify(r)
+        },
+
+        {
+          ct: 'CT-06',
+          desc: 'Usuario deve existir',
+          ms: 10,
+          fn: () => login(emailInput, senhaInput),
+
+          ok: r => {
+            const usuarioExiste = DB.some(u => u.email === emailInput);
+
+            if (!usuarioExiste) {
+              return r.status === 404;
+            }
+
+            return true;
+          },
+          exp: 'validação correta de existência do usuário',
+          rec: r => r.status
+        },
+
+        {
+          ct: 'CT-07',
+          desc: 'Senha deve ser valida',
+          ms: 10,
+          fn: () => login(emailInput, senhaInput),
+
+          ok: r => {
+            const u = DB.find(x => x.email === emailInput);
+
+            // ignora se usuário não existe
+            if (!u) return true;
+
+            // ignora se senha vazia (isso é teste 02 / 15 / 16)
+            if (!senhaInput || senhaInput.trim() === '') return true;
+
+            // senha incorreta → deve retornar 401
+            if (senhaInput !== u.senha) {
+              return r.status === 401;
+            }
+
+            // senha correta → não pode ser 401
+            return r.status !== 401;
+          },
+          exp: 'validação correta da senha',
+          rec: r => r.status
+        },
+
+        {
+          ct: 'CT-08',
+          desc: 'Conta deve estar ativa',
+          ms: 10,
+          fn: () => login(emailInput, senhaInput),
+
+          ok: r => {
+            const u = DB.find(x => x.email === emailInput);
+
+            if (!u) return true;
+
+            if (senhaInput !== u.senha) return true;
+
+            if (!u.ativo) {
+              return r.status === 403;
+            }
+
+            return true;
+          },
+          exp: 'validação de conta ativa',
+          rec: r => r.status
+        },
+
+        {
+          ct: 'CT-09',
+          desc: 'Deve retornar dados do usuario apos o login',
+          ms: 12,
+          fn: () => login(emailInput, senhaInput),
+
+          ok: r =>
+            r.sucesso === true &&
+            r.usuario !== undefined &&
+            r.usuario.email === emailInput &&
+            r.usuario.nome !== undefined &&
+            r.usuario.senha === undefined,
+
+          exp: 'usuario retornado sem expor senha',
+
+          rec: r => r.usuario ? JSON.stringify(r.usuario) : 'usuario nao retornado'
+        },
+
+        // SUITE 3
+        {
+          suite: 'SUITE 3 - Token JWT (segurança)',
+          ct: 'CT-10',
+          desc: 'Token gerado deve ser válido',
+          ms: 14,
+          fn: () => {
+            const r = login(emailInput, senhaInput);
+            return r.sucesso ? verificarToken(r.token) : { valido: false };
+          },
+
+          ok: r => r.valido === true,
+
+          exp: 'token valido',
+
+          rec: r => r
+        },
+
+        {
+          ct: 'CT-11',
+          desc: 'Token adulterado deve ser rejeitado',
+          ms: 14,
+          fn: () => verificarToken("token.adulterado.invalido"),
+
+          ok: r => r.valido === false,
+
+          exp: 'token invalido',
+
+          rec: r => r
+        },
+
+        {
+          ct: 'CT-12',
+          desc: 'Token vazio deve ser rejeitado',
+          ms: 14,
+          fn: () => verificarToken(""),
+
+          ok: r => r.valido === false && r.valido != null,
+
+          exp: 'token invalido',
+
+          rec: r => r
+        },
+
+        {
+          ct: 'CT-13',
+          desc: 'Token deve conter dados corretos do usuario',
+          ms: 14,
+          fn: () => {
+            const r = login(emailInput, senhaInput);
+            return r.sucesso ? verificarToken(r.token) : { valido: false };
+          },
+
+          ok: r =>
+            r.valido === true &&
+            r.usuario !== undefined &&
+            r.usuario.email === emailInput &&
+            r.usuario.senha === undefined,
+
+          exp: 'dados corretos do usuario no token',
+
+          rec: r => r.usuario
+        },
+
+        // SUITE 4 – Casos de Borda (Edge Cases)              
+        {
+          suite: 'SUITE 4 - Casos de Borda (Edge Cases)  ',
+          ct: 'CT-14',
+          desc: 'Deve ser case-sensitive no e-mail',
+          ms: 10,
+          fn: () => login(emailInput, senhaInput),
+          ok: r => {
+            const existeExato = DB.some(u => u.email === emailInput);
+            const existeIgnoreCase = DB.some(u => u.email.toLowerCase() === emailInput.toLowerCase());
+
+            // Se só existe ignorando case → deve falhar
+            if (!existeExato && existeIgnoreCase) {
+              return r.status === 404;
+            }
+
+            // Caso normal → não validar aqui
+            return true;
+          },
+          exp: 'status 404',
+          rec: r => r.status
+        },
+
+        {
+          ct: 'CT-15',
+          desc: 'Deve tratar campo vazio como inválido',
+          ms: 10,
+          fn: () => login(emailInput, senhaInput),
+          ok: r => {
+            if (emailInput === '' || senhaInput === '') {
+              return r.status === 400;
+            }
+            return true;
+          },
+          exp: 'status 400',
+          rec: r => r.status
+        },
+
+        {
+          ct: 'CT-16',
+          desc: 'Deve rejeitar senha com espaços em branco',
+          ms: 10,
+          fn: () => login(emailInput, senhaInput),
+          ok: r => {
+            const temEspaco = senhaInput.trim() === '';
+
+            if (temEspaco) {
+              return r.status === 400;
+            }
+
+            return true;
+          },
+          exp: 'status 400',
+          rec: r => r.status
+        }
+
+      ];
+    }
+
+    function executarTestes(emailInput, senhaInput) {
+
+      var logEl = document.getElementById('log');
+      var progEl = document.getElementById('prog');
+      var infoEl = document.getElementById('info');
+      var badgeEl = document.getElementById('badge');
+
+      logEl.innerHTML = '';
+      progEl.style.width = '0%';
+      progEl.style.background = 'var(--green)';
+      badgeEl.textContent = 'executando...';
+      badgeEl.style.cssText = '';
+
+      var testes = montarTestes(emailInput, senhaInput);
+
+      var passou = 0;
+      var N = testes.length;
+      var i = 0;
+
+      function rodarProximo() {
+
+        if (i >= N) {
+
+          var pct = Math.round((passou / N) * 100);
+          var allOk = pct === 100;
+
+          infoEl.textContent = passou + '/' + N + ' passed  |  ' + pct + '%';
+
+          progEl.style.background = allOk ? 'var(--green)' : 'var(--red)';
+
+          badgeEl.textContent = N + ' testes  |  ' + pct + '% ' + (allOk ? 'OK' : 'FALHOU');
+
+          badgeEl.style.background = allOk
+            ? 'rgba(0,229,160,.12)'
+            : 'rgba(255,79,106,.12)';
+
+          badgeEl.style.color = allOk ? 'var(--green)' : 'var(--red)';
+
+          badgeEl.style.borderColor = allOk
+            ? 'rgba(0,229,160,.2)'
+            : 'rgba(255,79,106,.2)';
+
+          return;
+        }
+
+        var t = testes[i];
+
+        if (t.suite) {
+          var sep = document.createElement('div');
+          sep.className = 'suite-sep';
+          sep.textContent = t.suite;
+          logEl.appendChild(sep);
+        }
+
+        setTimeout(function () {
+
+          var res;
+          var ok;
+
+          try {
+            res = t.fn(); // executa o teste normalmente
+          } catch (e) {
+            res = { sucesso: false, status: 500, mensagem: 'Erro: ' + e.message };
+          }
+
+          ok = t.ok(res); // valida resultado
+
+          if (ok) passou++;
+
+          var row = document.createElement('div');
+          row.className = 'log-row ' + (ok ? 'pass' : 'fail');
+
+          row.innerHTML =
+            '<span class="l-ico" style="color:' + (ok ? 'var(--green)' : 'var(--red)') + '">' +
+            (ok ? '&#10003;' : '&#10005;') +
+            '</span>' +
+            '<span class="l-ct">' + t.ct + '</span>' +
+            '<span class="l-desc" title="' + t.desc + '">' + t.desc + '</span>' +
+            '<span class="l-ms">' + t.ms + 'ms</span>';
+
+          logEl.appendChild(row);
+
+          if (!ok) {
+            var det = document.createElement('div');
+            det.className = 'fail-block';
+
+            det.innerHTML =
+              '<span class="exp">Expected: </span><span class="val">' + t.exp + '</span><br>' +
+              '<span class="rec">Received: </span><span class="val">' + t.rec(res) + '</span>';
+
+            logEl.appendChild(det);
+          }
+
+          logEl.scrollTop = logEl.scrollHeight;
+
+          progEl.style.width = Math.round(((i + 1) / N) * 100) + '%';
+
+          infoEl.textContent = (i + 1) + '/' + N + '  |  ' + passou + ' OK';
+
+          i++;
+          rodarProximo();
+
+        }, 65 + Math.floor(Math.random() * 60));
+      }
+
+      rodarProximo();
+    }
+  </script>
 </body>
+
 </html>

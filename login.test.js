@@ -155,6 +155,7 @@ describe("⚠️  SUITE 4 – Casos de Borda", () => {
   test("❌ CT-15 | Deve tratar campo nulo como inválido", () => {
     const resultado = login(null, null);
 
+    // E-mail e senha null nao deve encontrar o usuário
     expect(resultado.sucesso).toBe(false);
     expect(resultado.status).toBe(400);
   });
